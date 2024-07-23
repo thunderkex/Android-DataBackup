@@ -2,12 +2,8 @@ package com.xayah.feature.main.medium.backup.list
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,10 +18,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.Checklist
-import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Sort
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,6 +39,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.xayah.core.ui.component.ChipRow
@@ -60,14 +55,9 @@ import com.xayah.core.ui.component.confirm
 import com.xayah.core.ui.component.paddingHorizontal
 import com.xayah.core.ui.component.paddingTop
 import com.xayah.core.ui.component.paddingVertical
-import com.xayah.core.ui.model.ImageVectorToken
-import com.xayah.core.ui.model.StringResourceToken
 import com.xayah.core.ui.route.MainRoutes
 import com.xayah.core.ui.token.SizeTokens
 import com.xayah.core.ui.util.LocalNavController
-import com.xayah.core.ui.util.fromString
-import com.xayah.core.ui.util.fromStringId
-import com.xayah.core.ui.util.fromVector
 import com.xayah.core.util.navigateSingle
 import com.xayah.feature.main.medium.ListScaffold
 import com.xayah.feature.main.medium.R
@@ -99,24 +89,18 @@ fun PageMediumBackupList() {
     ListScaffold(
         scrollBehavior = scrollBehavior,
         snackbarHostState = viewModel.snackbarHostState,
-        title = StringResourceToken.fromStringId(R.string.select_files),
-        subtitle = if (mediumSelectedState != 0) StringResourceToken.fromString("(${mediumSelectedState}/${mediumState.size})") else null,
+        title = stringResource(id = R.string.select_files),
+        subtitle = if (mediumSelectedState != 0) "(${mediumSelectedState}/${mediumState.size})" else null,
         actions = {
             if (srcMediumEmptyState.not()) {
-                AnimatedVisibility(visible = mediumSelectedState != 0) {
-                    IconButton(icon = ImageVectorToken.fromVector(Icons.Outlined.Block)) {
-                        viewModel.launchOnIO {
-                            if (dialogState.confirm(title = StringResourceToken.fromStringId(R.string.prompt), text = StringResourceToken.fromStringId(R.string.confirm_add_to_blacklist))) {
-                                viewModel.emitIntentOnIO(IndexUiIntent.BlockSelected)
-                            }
+                IconButton(enabled = mediumSelectedState != 0, icon = Icons.Outlined.Block) {
+                    viewModel.launchOnIO {
+                        if (dialogState.confirm(title = context.getString(R.string.prompt), text = context.getString(R.string.confirm_add_to_blacklist))) {
+                            viewModel.emitIntentOnIO(IndexUiIntent.BlockSelected)
                         }
                     }
                 }
-                IconButton(icon = ImageVectorToken.fromVector(if (uiState.filterMode) Icons.Filled.FilterAlt else Icons.Outlined.FilterAlt)) {
-                    viewModel.emitStateOnMain(uiState.copy(filterMode = uiState.filterMode.not()))
-                    viewModel.emitIntentOnIO(IndexUiIntent.ClearKey)
-                }
-                IconButton(icon = ImageVectorToken.fromVector(Icons.Outlined.Checklist)) {
+                IconButton(icon = Icons.Outlined.Checklist) {
                     viewModel.emitIntentOnIO(IndexUiIntent.SelectAll(uiState.selectAll.not()))
                     viewModel.emitStateOnMain(uiState.copy(selectAll = uiState.selectAll.not()))
                 }
@@ -140,52 +124,50 @@ fun PageMediumBackupList() {
             val sortIndexState by viewModel.sortIndexState.collectAsStateWithLifecycle()
             val sortTypeState by viewModel.sortTypeState.collectAsStateWithLifecycle()
 
-            AnimatedVisibility(visible = uiState.filterMode, enter = fadeIn() + slideInVertically(), exit = slideOutVertically() + fadeOut()) {
-                Column {
-                    SearchBar(
-                        modifier = Modifier
-                            .paddingHorizontal(SizeTokens.Level16)
-                            .paddingVertical(SizeTokens.Level8),
-                        enabled = true,
-                        placeholder = StringResourceToken.fromStringId(R.string.search_bar_hint_medium),
-                        onTextChange = {
-                            viewModel.emitIntentOnIO(IndexUiIntent.FilterByKey(key = it))
-                        }
-                    )
-
-                    ChipRow(horizontalSpace = SizeTokens.Level16) {
-                        SortChip(
-                            enabled = true,
-                            dismissOnSelected = true,
-                            leadingIcon = ImageVectorToken.fromVector(Icons.Rounded.Sort),
-                            selectedIndex = sortIndexState,
-                            type = sortTypeState,
-                            list = stringArrayResource(id = R.array.backup_sort_type_items_files).toList(),
-                            onSelected = { index, _ ->
-                                scope.launch {
-                                    scrollState.scrollToItem(0)
-                                    viewModel.emitIntentOnIO(IndexUiIntent.Sort(index = index, type = sortTypeState))
-                                }
-                            },
-                            onClick = {}
-                        )
+            Column {
+                SearchBar(
+                    modifier = Modifier
+                        .paddingHorizontal(SizeTokens.Level16)
+                        .paddingVertical(SizeTokens.Level8),
+                    enabled = true,
+                    placeholder = stringResource(id = R.string.search_bar_hint_medium),
+                    onTextChange = {
+                        viewModel.emitIntentOnIO(IndexUiIntent.FilterByKey(key = it))
                     }
+                )
 
-                    Divider(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .paddingTop(SizeTokens.Level8)
+                ChipRow(horizontalSpace = SizeTokens.Level16) {
+                    SortChip(
+                        enabled = true,
+                        dismissOnSelected = true,
+                        leadingIcon = Icons.Rounded.Sort,
+                        selectedIndex = sortIndexState,
+                        type = sortTypeState,
+                        list = stringArrayResource(id = R.array.backup_sort_type_items_files).toList(),
+                        onSelected = { index, _ ->
+                            scope.launch {
+                                scrollState.scrollToItem(0)
+                                viewModel.emitIntentOnIO(IndexUiIntent.Sort(index = index, type = sortTypeState))
+                            }
+                        },
+                        onClick = {}
                     )
                 }
+
+                Divider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .paddingTop(SizeTokens.Level8)
+                )
             }
 
             Box {
                 LazyColumn(modifier = Modifier.fillMaxSize(), state = scrollState) {
                     item {
                         Clickable(
-                            icon = ImageVectorToken.fromVector(Icons.Rounded.Add),
-                            title = StringResourceToken.fromStringId(R.string.add),
-                            value = StringResourceToken.fromStringId(R.string.choose_a_custom_path)
+                            icon = Icons.Rounded.Add,
+                            title = stringResource(id = R.string.add),
+                            value = stringResource(id = R.string.choose_a_custom_path)
                         ) {
                             viewModel.emitIntentOnIO(IndexUiIntent.Add(context = context))
                         }
@@ -196,10 +178,8 @@ fun PageMediumBackupList() {
                             MediaItem(
                                 item = item,
                                 onCheckedChange = { viewModel.emitIntentOnIO(IndexUiIntent.Select(item)) },
-                                filterMode = uiState.filterMode,
                                 onClick = {
-                                    if (uiState.filterMode) viewModel.emitIntentOnIO(IndexUiIntent.ToPageDetail(navController, item))
-                                    else viewModel.emitIntentOnIO(IndexUiIntent.Select(item))
+                                    viewModel.emitIntentOnIO(IndexUiIntent.ToPageDetail(navController, item))
                                 }
                             )
                         }
