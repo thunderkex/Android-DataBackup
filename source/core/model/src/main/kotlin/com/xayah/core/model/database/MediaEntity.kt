@@ -27,7 +27,6 @@ data class MediaInfo(
 
 @Serializable
 data class MediaExtraInfo(
-    var labels: List<String>,
     var blocked: Boolean,
     var activated: Boolean,
     var existed: Boolean,
@@ -70,5 +69,6 @@ fun MediaEntity.asExternalModel() = File(
     id = id,
     name = name,
     path = path,
+    preserveId = preserveId,
     selected = extraInfo.activated
 )

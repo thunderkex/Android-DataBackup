@@ -14,6 +14,7 @@ import com.xayah.core.model.util.of
 import com.xayah.core.ui.route.MainRoutes
 import com.xayah.core.util.decodeURL
 import com.xayah.core.util.ifEmptyEncodeURLWithSpace
+import com.xayah.core.util.launchOnDefault
 import com.xayah.core.util.navigateSingle
 import com.xayah.core.work.WorkManagerInitializer
 import com.xayah.feature.main.list.ListUiState.Loading
@@ -24,7 +25,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,6 +49,7 @@ class ListViewModel @Inject constructor(
             Success.Apps(
                 opType = opType,
                 selected = listData.selected,
+                isUpdating = listData.isUpdating,
                 cloudName = cloudName,
                 backupDir = backupDir,
             )
@@ -59,6 +60,7 @@ class ListViewModel @Inject constructor(
             Success.Files(
                 opType = opType,
                 selected = listData.selected,
+                isUpdating = listData.isUpdating,
                 cloudName = cloudName,
                 backupDir = backupDir,
             )
@@ -70,27 +72,35 @@ class ListViewModel @Inject constructor(
     )
 
     fun onResume() {
-        viewModelScope.launch {
-            when (target) {
-                Target.Apps -> {
+        viewModelScope.launchOnDefault {
+            when (uiState.value) {
+                is Success.Apps -> {
                     when (opType) {
                         OpType.BACKUP -> {
-                            WorkManagerInitializer.fastInitializeAndUpdateApps(context)
+                            val state = uiState.value.castTo<Success.Apps>()
+                            if (state.isUpdating.not()) {
+                                WorkManagerInitializer.fastInitializeAndUpdateApps(context)
+                            }
                         }
 
                         OpType.RESTORE -> {}
                     }
                 }
 
-                Target.Files -> {
+                is Success.Files -> {
                     when (opType) {
                         OpType.BACKUP -> {
-                            WorkManagerInitializer.fastInitializeAndUpdateFiles(context)
+                            val state = uiState.value.castTo<Success.Files>()
+                            if (state.isUpdating.not()) {
+                                WorkManagerInitializer.fastInitializeAndUpdateFiles(context)
+                            }
                         }
 
                         OpType.RESTORE -> {}
                     }
                 }
+
+                else -> {}
             }
         }
     }
@@ -139,21 +149,24 @@ sealed interface ListUiState {
     sealed class Success(
         open val opType: OpType,
         open val selected: Long,
+        open val isUpdating: Boolean,
         open val cloudName: String,
         open val backupDir: String,
     ) : ListUiState {
         data class Apps(
             override val opType: OpType,
             override val selected: Long,
+            override val isUpdating: Boolean,
             override val cloudName: String,
             override val backupDir: String,
-        ) : Success(opType, selected, cloudName, backupDir)
+        ) : Success(opType, selected, isUpdating, cloudName, backupDir)
 
         data class Files(
             override val opType: OpType,
             override val selected: Long,
+            override val isUpdating: Boolean,
             override val cloudName: String,
             override val backupDir: String,
-        ) : Success(opType, selected, cloudName, backupDir)
+        ) : Success(opType, selected, isUpdating, cloudName, backupDir)
     }
 }
