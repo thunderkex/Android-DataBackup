@@ -9,6 +9,7 @@ import android.content.pm.UserInfo
 import android.os.IBinder
 import android.os.Parcel
 import android.os.ParcelFileDescriptor
+import android.os.Process
 import android.os.RemoteException
 import android.os.UserHandle
 import com.google.gson.reflect.TypeToken
@@ -56,6 +57,11 @@ class RemoteRootService(private val context: Context) {
     private fun log(msg: () -> String) = LogUtil.log { "RemoteRootService" to msg() }
 
     class RemoteRootService : RootService() {
+        init {
+            if (Process.myUid() == 0)
+                System.loadLibrary("nativelib")
+        }
+
         override fun onBind(intent: Intent): IBinder = RemoteRootServiceImpl()
     }
 
@@ -230,6 +236,14 @@ class RemoteRootService(private val context: Context) {
     suspend fun clearEmptyDirectoriesRecursively(path: String) = runCatching { getService().clearEmptyDirectoriesRecursively(path) }.onFailure(onFailure)
 
     suspend fun setAllPermissions(src: String) = runCatching { getService().setAllPermissions(src) }.onFailure(onFailure)
+
+    /**
+     * Get the uid and gid of the file/directory
+     *
+     * @param path
+     * @return Uid to Gid
+     */
+    suspend fun getUidGid(path: String): Pair<UInt, UInt> = runCatching { getService().getUidGid(path).let { it[0].toUInt() to it[1].toUInt() } }.onFailure(onFailure).getOrElse { UInt.MAX_VALUE to UInt.MAX_VALUE }
 
     suspend fun getInstalledPackagesAsUser(flags: Int, userId: Int): List<PackageInfo> = runCatching {
         val pfd = getService().getInstalledPackagesAsUser(flags, userId)
