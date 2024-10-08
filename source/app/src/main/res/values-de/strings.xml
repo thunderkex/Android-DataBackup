@@ -366,5 +366,11 @@
     <string name="refresh">Aktualisieren</string>
     <string name="updating_app_list">Anwendungsliste aktualisieren</string>
     <string name="loading_backups">Backup wird geladen</string>
-    <string name="updating_file_list">Dateiliste wird aktualisiert</string>
+    <string name="updating_file_list">Dateiliste aktualisieren</string>
+    <string name="denied">Abgelehnt</string>
+    <string name="no_activities_found">Keine Aktivitäten gefunden!</string>
+    <string name="labels">Labels</string>
+    <string name="label">Label</string>
+    <string name="launch">Starten</string>
+    <string name="app_is_frozen">Anwendung ist abgestürzt!</string>
 </resources>
