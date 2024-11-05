@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.UserHandle
 import com.xayah.core.data.util.srcDir
 import com.xayah.core.database.dao.PackageDao
-import com.xayah.core.datastore.readBackupFilterFlagIndex
 import com.xayah.core.datastore.readCheckKeystore
 import com.xayah.core.datastore.readCompressionType
 import com.xayah.core.datastore.readCustomSUFile
@@ -16,8 +15,6 @@ import com.xayah.core.datastore.readIconUpdateTime
 import com.xayah.core.datastore.readLoadSystemApps
 import com.xayah.core.datastore.readLoadedIconMD5
 import com.xayah.core.datastore.readReloadDumpApk
-import com.xayah.core.datastore.readRestoreFilterFlagIndex
-import com.xayah.core.datastore.readRestoreUserIdIndex
 import com.xayah.core.datastore.saveIconUpdateTime
 import com.xayah.core.datastore.saveLoadedIconMD5
 import com.xayah.core.model.CompressionType
@@ -46,7 +43,6 @@ import com.xayah.core.util.DateUtil
 import com.xayah.core.util.IconRelativeDir
 import com.xayah.core.util.LogUtil
 import com.xayah.core.util.PathUtil
-import com.xayah.core.util.PermissionUtil
 import com.xayah.core.util.command.BaseUtil
 import com.xayah.core.util.command.PackageUtil
 import com.xayah.core.util.command.Tar
@@ -174,11 +170,6 @@ class PackageRepository @Inject constructor(
         runCatching { p.userId == userId }.getOrDefault(false)
     }
 
-    suspend fun filterBackup(packages: List<PackageEntity>) = packages.filter(getFlagPredicateNew(index = context.readBackupFilterFlagIndex().first()))
-
-    suspend fun filterRestore(packages: List<PackageEntity>) = packages.filter(getFlagPredicateNew(index = context.readRestoreFilterFlagIndex().first()))
-        .filter(getUserIdPredicateNew(indexList = context.readRestoreUserIdIndex().first(), userIdList = queryUserIds(OpType.RESTORE)))
-
     private fun sortByInstallTimeNew(type: SortType): Comparator<PackageEntity> = when (type) {
         SortType.ASCENDING -> {
             compareBy { p -> p.packageInfo.firstInstallTime }
@@ -232,7 +223,7 @@ class PackageRepository @Inject constructor(
         userHandle: UserHandle?,
         hasPassedOneDay: Boolean
     ): PackageEntity {
-        val permissions = PermissionUtil.getPermission(packageManager = pm, packageInfo = info)
+        val permissions = rootService.getPermissions(packageInfo = info)
         val uid = info.applicationInfo.uid
         val hasKeystore = if (checkKeystore) PackageUtil.hasKeystore(context.readCustomSUFile().first(), uid) else false
         val ssaid = rootService.getPackageSsaidAsUser(packageName = info.packageName, uid = uid, userId = userId)

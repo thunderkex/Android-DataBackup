@@ -24,12 +24,6 @@ android {
         buildConfigField("String[]", "SUPPORTED_LOCALES", generateSupportedLocales())
     }
 
-    // TODO Force enable the latest libsu
-    configurations.all {
-        resolutionStrategy.force("com.github.topjohnwu.libsu:core:PR182-SNAPSHOT")
-        resolutionStrategy.force("com.github.topjohnwu.libsu:service:PR182-SNAPSHOT")
-    }
-
     lint {
         disable += "MissingTranslation"
     }
@@ -142,6 +136,7 @@ dependencies {
     implementation(project(":feature:main:processing"))
     implementation(project(":feature:main:list"))
     implementation(project(":feature:main:details"))
+    implementation(project(":feature:main:history"))
     implementation(project(":feature:main:packages"))
     implementation(project(":feature:main:medium"))
     implementation(project(":feature:main:directory"))
