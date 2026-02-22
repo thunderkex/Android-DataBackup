@@ -436,7 +436,7 @@
     <string name="hide_password">Şifreyi Göster</string>
     <string name="public_network">Genel Ağ</string>
     <string name="hidden_password">Gizli Şifre</string>
-    <string name="auto_screen_off_desc">Yedekleme veya geri yükleme sırasında ekranı otomatik olarak kapatın, ardından işlem tamamlandıktan sonra açın.</string>
+    <string name="auto_screen_off_desc">Yedekleme veya geri yükleme sırasında ekranı otomatik olarak kapatır, işlem tamamlandıktan sonra yeniden açar</string>
     <string name="select_all_addl_data">Tümünü seç: Ek Veri</string>
     <string name="select_all_obb_and_media"><![CDATA[Tümünü seç: OBB ve Medya]]></string>
     <string name="unselect_all_addl_data">Tümünün seçimini kaldır: Ek Veri</string>
@@ -465,11 +465,11 @@
     <string name="messages">Mesajlar</string>
     <string name="not_set_up">Ayarlanmadı</string>
     <string name="new_backup">Yeni yedekleme</string>
-    <string name="time_format_pattern">MMM dd, HH:mm</string>
+    <string name="time_format_pattern">dd MMM, HH:mm</string>
     <string name="incremental_backup">Artımlı yedekleme</string>
     <string name="incremental_backup_desc">Ek meta verileri ayrı bir dosyada depolanmış artımlı bir arşiv üzerinde işlem yapın</string>
     <string name="clean_backup">Temiz yedekleme</string>
-    <string name="clean_backup_desc">Yedekleme yapmadan önce, seçilen yedekleme öğesinin önceki tüm yedeklemelerini silin.</string>
+    <string name="clean_backup_desc">Seçilen şey daha önceden yedeklenmiş ise eski yedeklemeleri kaldır</string>
     <string name="target">Hedef</string>
     <string name="contact_permission_desc">Bu izin, kişileri yedekleme/geri yükleme için gereklidir</string>
     <string name="call_log_permission_desc">Bu izin arama kayıtlarını yedeklemek/geri yüklemek için gereklidir</string>
@@ -487,4 +487,5 @@
     <string name="created_at">Oluşturuldu</string>
     <string name="updated_at">Güncellendi</string>
     <string name="edit_name">İsmi düzenle</string>
+    <string name="canceled">İptal edildi</string>
 </resources>
