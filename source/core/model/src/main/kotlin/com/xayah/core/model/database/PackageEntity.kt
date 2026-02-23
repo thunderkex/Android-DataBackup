@@ -23,7 +23,7 @@ data class PackagePermission @JvmOverloads constructor(
     var name: String = "",
     var isGranted: Boolean = false, // Only for runtime permissions
     var op: Int = AppOpsManagerHidden.OP_NONE,
-    var mode: Int = AppOpsManager.MODE_IGNORED,
+    var mode: Int? = null,
 ) : Parcelable {
     val isOpsAllowed: Boolean
         get() = run {
@@ -38,15 +38,19 @@ data class PackagePermission @JvmOverloads constructor(
         parcel.readString() ?: "",
         parcel.readByte() != 0.toByte(),
         parcel.readInt(),
-        parcel.readInt()
-    ) {
-    }
+        if (parcel.readInt() == 1) parcel.readInt() else null
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(name)
         parcel.writeByte(if (isGranted) 1 else 0)
         parcel.writeInt(op)
-        parcel.writeInt(mode)
+        if (mode == null) {
+            parcel.writeInt(0)
+        } else {
+            parcel.writeInt(1)
+            mode?.also { parcel.writeInt(it) }
+        }
     }
 
     override fun describeContents(): Int {

@@ -500,7 +500,7 @@ internal class RemoteRootServiceImpl(private val context: Context) : IRemoteRoot
                 val protectionFlags = PermissionInfoCompat.getProtectionFlags(permissionInfo)
                 val isGranted = (requestedPermissionsFlags[i] and PackageInfo.REQUESTED_PERMISSION_GRANTED) != 0
                 val op = AppOpsManagerHidden.permissionToOpCode(name)
-                val mode = ops?.get(op) ?: AppOpsManager.MODE_IGNORED
+                val mode = ops?.get(op)
                 if ((op != AppOpsManagerHidden.OP_NONE)
                     || (protection == PermissionInfo.PROTECTION_DANGEROUS || (protectionFlags and PermissionInfo.PROTECTION_FLAG_DEVELOPMENT) != 0)
                 ) {

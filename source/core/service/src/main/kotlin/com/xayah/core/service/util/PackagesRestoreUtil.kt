@@ -379,7 +379,9 @@ class PackagesRestoreUtil @Inject constructor(
                             rootService.revokeRuntimePermission(packageName, it.name, user!!)
                         }
                         if (it.op != AppOpsManagerHidden.OP_NONE) {
-                            rootService.setOpsMode(it.op, uid, packageName, it.mode)
+                            it.mode?.also { mode ->
+                                rootService.setOpsMode(it.op, uid, packageName, mode)
+                            }
                         }
                     }
                 }
