@@ -486,4 +486,7 @@
     <string name="created_at">創建於</string>
     <string name="updated_at">更新於</string>
     <string name="edit_name">編輯名稱</string>
+    <string name="advanced_settings">進階設定</string>
+    <string name="app_theme_settings">應用主題設定</string>
+    <string name="model">型號</string>
 </resources>

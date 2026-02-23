@@ -42,6 +42,7 @@ fun Preference(
     icon: ImageVector,
     title: String,
     subtitle: String,
+    subtitleShimmer: Boolean = false,
     slot: @Composable (RowScope.() -> Unit)? = null,
     onClick: (() -> Unit)? = null,
 ) {
@@ -88,6 +89,7 @@ fun Preference(
                     color = animatedTitleColor
                 )
                 Text(
+                    modifier = Modifier.shimmer(subtitleShimmer),
                     text = subtitle,
                     style = MaterialTheme.typography.bodySmall,
                     color = animatedSubtitleColor

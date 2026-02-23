@@ -36,6 +36,7 @@ import androidx.navigation.NavHostController
 import com.xayah.databackup.BuildConfig
 import com.xayah.databackup.R
 import com.xayah.databackup.feature.BackupRoute
+import com.xayah.databackup.feature.SettingsRoute
 import com.xayah.databackup.ui.component.ActionButton
 import com.xayah.databackup.ui.component.SmallActionButton
 import com.xayah.databackup.ui.component.StorageCard
@@ -90,7 +91,7 @@ fun DashboardScreen(navController: NavHostController, viewModel: DashboardViewMo
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* do something */ }) {
+                    IconButton(onClick = { navController.navigateSafely(SettingsRoute) }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.ic_settings),
                             contentDescription = "Localized description"

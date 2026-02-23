@@ -40,6 +40,7 @@ import com.xayah.databackup.feature.backup.contacts.BackupContactsScreen
 import com.xayah.databackup.feature.backup.messages.BackupMessagesScreen
 import com.xayah.databackup.feature.backup.networks.BackupNetworksScreen
 import com.xayah.databackup.feature.dashboard.DashboardScreen
+import com.xayah.databackup.feature.settings.SettingsScreen
 import com.xayah.databackup.feature.setup.NoPermKey
 import com.xayah.databackup.feature.setup.SetupActivity
 import com.xayah.databackup.ui.theme.DataBackupTheme
@@ -163,6 +164,10 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable<DashboardRoute> {
                             DashboardScreen(navController)
+                        }
+
+                        composable<SettingsRoute> {
+                            SettingsScreen(navController)
                         }
 
                         navigation<BackupRoute>(startDestination = BackupSetupRoute) {

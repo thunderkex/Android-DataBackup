@@ -501,4 +501,7 @@
     <string name="created_at">Created at</string>
     <string name="updated_at">Updated at</string>
     <string name="edit_name">Edit name</string>
+    <string name="advanced_settings">Advanced settings</string>
+    <string name="app_theme_settings">App theme settings</string>
+    <string name="model">Model</string>
 </resources>

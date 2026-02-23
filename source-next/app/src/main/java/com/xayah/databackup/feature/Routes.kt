@@ -6,6 +6,9 @@ import kotlinx.serialization.Serializable
 data object DashboardRoute
 
 @Serializable
+data object SettingsRoute
+
+@Serializable
 data object BackupRoute
 
 @Serializable

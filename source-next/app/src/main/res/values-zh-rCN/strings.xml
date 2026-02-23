@@ -488,4 +488,7 @@
     <string name="created_at">创建于</string>
     <string name="updated_at">更新于</string>
     <string name="edit_name">编辑名称</string>
+    <string name="advanced_settings">高级设置</string>
+    <string name="app_theme_settings">应用主题设置</string>
+    <string name="model">型号</string>
 </resources>
