@@ -488,4 +488,6 @@
     <string name="updated_at">Actualizado a</string>
     <string name="edit_name">Editar nombre</string>
     <string name="canceled">Cancelado</string>
+    <string name="advanced_settings">Ajustes avanzados</string>
+    <string name="model">Modelo</string>
 </resources>
