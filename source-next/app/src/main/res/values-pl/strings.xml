@@ -488,4 +488,7 @@
     <string name="updated_at">Zaktualizowana</string>
     <string name="edit_name">Edytuj nazwę</string>
     <string name="canceled">Anulowano</string>
+    <string name="advanced_settings">Ustawienia zaawansowane</string>
+    <string name="app_theme_settings">Ustawienia motywu aplikacji</string>
+    <string name="model">Model</string>
 </resources>
